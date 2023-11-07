@@ -1,0 +1,22 @@
+package br.com.pix.tcc.domain.request;
+
+import lombok.Data;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+@Data
+public class ConsultaPrePixRequest {
+
+    String tipoTransferencia;
+
+    String chavepix;
+
+    @NotBlank(message = "Digite um nome valido")
+    @Size(min = 12, max = 14)
+    @NotNull
+    private Integer cpf_cnpj;
+
+
+}
