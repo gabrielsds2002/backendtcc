@@ -2,6 +2,7 @@ package br.com.pix.tcc.domain.Response;
 
 import br.com.pix.tcc.domain.CpfJaEnviado;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
 
@@ -30,11 +31,15 @@ public class ConsultaPrePixResponse {
     private String instituicao_financeira;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String numeroContaRemetente;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private HttpStatus codigo;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String mensagem;
 
 
-    private String numeroContaRemetente;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private HttpStatus codigo;
+
 
 }

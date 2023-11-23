@@ -20,19 +20,14 @@ public class loginController {
 
     @GetMapping("/login")
     public LoginResponse login(LoginRequest loginRequest){
-        ResponseEntity<LoginResponse> response = null;
-        CadastroReponse cadastroReponse = null;
         LoginDao loginDao = new LoginDao();
-        String msgErro = "CPF já cadastrado";
-
         return loginDao.login(loginRequest);
     }
 
     @GetMapping("/saldo")
     public ConsultaSaldoResponse consultaSaldo(ConsultaSaldoRequest consultaSaldo){
         ConsultaSaldoResponse response = new ConsultaSaldoResponse();
-
-        response =ConsultaSaldoDao.consultaSaldo(consultaSaldo);
+        response.setSaldo(ConsultaSaldoDao.consultaSaldo(consultaSaldo.getCpf_cnpj()));
         return response;
     }
 }

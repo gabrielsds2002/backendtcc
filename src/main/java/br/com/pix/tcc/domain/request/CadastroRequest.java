@@ -6,10 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 @Entity
 @Data
@@ -22,7 +19,7 @@ public class CadastroRequest {
     @NotBlank(message = "Digite um nome valido")
     @Size(min = 12, max = 14)
     @NotNull
-    private Integer cpf_cnpj;
+    private String cpf_cnpj;
     @NotBlank(message = "Digite um nome valido")
     @Size(min = 3, max = 15)
     @NotNull
@@ -47,9 +44,10 @@ public class CadastroRequest {
     private String sexo;
 
     @NotBlank(message = "Digite um CEP valido")
+    @NotEmpty
     @NotNull
     @Size(min = 8, max = 8)
-    private String cep;
+    private Integer cep;
 
     @NotBlank(message = "Digite um CEP valido")
     @NotNull

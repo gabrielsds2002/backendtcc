@@ -45,7 +45,7 @@ public class LoginDao {
             while (rst.next()) {
 
 
-                consulta.setCpf_cnpj(rst.getString("cpf_cnpj"));
+                consulta.setCpf_cnpj(String.valueOf(rst.getInt("cpf_cnpj")));
                 consulta.setSenha(rst.getString("senha_app"));
                 response.setNome(rst.getString("nome")+" "+ rst.getString("sobrenome"));
 

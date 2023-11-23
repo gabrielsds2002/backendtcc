@@ -22,11 +22,9 @@ import java.util.List;
 public class ConsultaPrePixDAO {
 
 
-    //consulta cliente(saldo,chavepix, limiteDiario,limiteNoturno,banco,nome)
-
     public ConsultaPrePixResponse validaCadastro(ConsultaPrePixRequest cadastro) {
 
-        String sql = "SELECT nome,saldo,chave_pix,limite_diario,limite_noturno,instituicao_financeira FROM consulta_basica_cliente WHERE cpf_cnpj = '" + cadastro.getCpf_cnpj() + "'";
+        String sql = "SELECT nome,saldo,chave_pix,limite_diario,limite_noturno,instituicao_financeira,numero_conta FROM consulta_basica_cliente WHERE cpf_cnpj = '" + cadastro.getCpf_cnpj() + "'";
 
 
         List<CadastroRequest> cadastros = new ArrayList<CadastroRequest>();
@@ -34,26 +32,22 @@ public class ConsultaPrePixDAO {
         Connection conn = null;
         PreparedStatement pstm = null;
         ResultSet rst = null;
-
+        ConsultaPrePixResponse consulta = new ConsultaPrePixResponse();
         try {
 
             conn = DatabaseConfig.criaConexao();
             pstm = (PreparedStatement) conn.prepareStatement(sql);
             rst = pstm.executeQuery();
-            ConsultaPrePixResponse consulta = new ConsultaPrePixResponse();
+
 
             while (rst.next()) {
-
-
                 consulta.setNome(rst.getString("nome"));
                 consulta.setSaldo(rst.getInt("saldo"));
-                consulta.setChave_pix(rst.getString("chave_pix"));
+                consulta.setNome(rst.getString("chave_pix"));
                 consulta.setLimite_diario(rst.getInt("limite_diario"));
                 consulta.setLimite_noturno(rst.getInt("limite_noturno"));
                 consulta.setInstituicao_financeira(rst.getString("instituicao_financeira"));
-
-
-
+                consulta.setNumeroContaRemetente(rst.getString("numero_conta"));
             }
 
             return consulta;
@@ -66,44 +60,30 @@ public class ConsultaPrePixDAO {
     }
 
 
-    public ConsultaPrePixResponse historico(ConsultaPrePixRequest cadastro) {
-
-        String sql = "SELECT cpf_cnpj FROM historico WHERE cpf_cnpj = '" + cadastro.getCpf_cnpj() + "'";
-
-
-        List<CadastroRequest> cadastros = new ArrayList<CadastroRequest>();
-
+    public List<CpfJaEnviado> historico(ConsultaPrePixRequest cadastro) {
+        List<CpfJaEnviado> cpfJaEnviado = new ArrayList<CpfJaEnviado>();
+        String sql = "SELECT cpf_cnpj_destinatario,nome_destinatario,chave_pix_destinatario FROM historico WHERE cpf_cnpj = '" + cadastro.getCpf_cnpj() + "'";
         Connection conn = null;
         PreparedStatement pstm = null;
         ResultSet rst = null;
-        Integer contador =0;
         try {
 
             conn = DatabaseConfig.criaConexao();
             pstm = (PreparedStatement) conn.prepareStatement(sql);
             rst = pstm.executeQuery();
-            ConsultaPrePixResponse consulta = new ConsultaPrePixResponse();
-            List<CpfJaEnviado> cpfJaEnviado = new ArrayList<CpfJaEnviado>();
-            CpfJaEnviado cpf = new CpfJaEnviado();
-
             while (rst.next()) {
-
-                cpf.setChave_pix(rst.getString("cpf_cnpj_destinatario"));
-                cpf.setNome(rst.getString("nome_destinatario"));
-                cpf.setCpf_cnpj(rst.getInt("chave_pix_destinatario"));
-                cpfJaEnviado.add(contador,cpf);
-                contador++;
+                CpfJaEnviado response = new CpfJaEnviado(
+                        rst.getInt("cpf_cnpj_destinatario"),
+                        rst.getString("nome_destinatario"),
+                        rst.getString("chave_pix_destinatario")
+                );
+                cpfJaEnviado.add(response);
             }
-            return consulta;
+
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+        return cpfJaEnviado;
     }
-
-    //consultar historico de transferencia se tiver consultar
-        //consulta cliente(chavepix,banco,nome)
-
-
-
 }

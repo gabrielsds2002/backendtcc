@@ -16,11 +16,6 @@ public class DatabaseConfig {
 
         return connection;
     }
-
-
-
-
-
 }
 
 

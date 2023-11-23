@@ -17,8 +17,8 @@ import java.sql.ResultSet;
 @RequiredArgsConstructor
 public class ConsultaSaldoDao {
 
-    public static ConsultaSaldoResponse consultaSaldo(ConsultaSaldoRequest consultaPix) {
-        String sql = "SELECT saldo FROM consulta_basica_cliente WHERE cpf_cnpj = '" + consultaPix.getCpf_cnpj() + "'";
+    public static float consultaSaldo(int cpf) {
+        String sql = "SELECT saldo FROM consulta_basica_cliente WHERE cpf_cnpj = '" + cpf + "'";
         Connection conn = null;
         PreparedStatement pstm = null;
         ResultSet rst = null;
@@ -33,7 +33,7 @@ public class ConsultaSaldoDao {
 
             consulta.setMensagem("Sucesso ao recuperar saldo!!!");
             consulta.setCodigo(HttpStatus.OK);
-            return consulta;
+            return consulta.getSaldo();
         } catch (Exception e) {
             e.printStackTrace();
 

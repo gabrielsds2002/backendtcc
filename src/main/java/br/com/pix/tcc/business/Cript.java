@@ -12,7 +12,6 @@ import java.util.Base64;
 
 public class Cript {
 
-    private static final String CHAVE = "chave-secreta1234"; // Chave secreta para criptografia, deve ser mantida segura
 
     public static String encryptIntToBase64(String number) throws Exception {
         String encodedString = Base64.getEncoder().encodeToString(number.getBytes());

@@ -1,38 +1,29 @@
 package br.com.pix.tcc.controller;
 
+import br.com.pix.tcc.config.BaseResponse;
 import br.com.pix.tcc.dao.ClienteDAO;
 import br.com.pix.tcc.domain.Response.CadastroReponse;
 import br.com.pix.tcc.domain.Response.ConsultaPrePixResponse;
 import br.com.pix.tcc.domain.Response.LoginResponse;
+import br.com.pix.tcc.domain.data.ConsultaPrePixData;
 import br.com.pix.tcc.domain.request.CadastroRequest;
 import br.com.pix.tcc.domain.request.ConsultaPrePixRequest;
+import br.com.pix.tcc.service.Consultaservice;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
+@RestController
+@RequiredArgsConstructor
 public class ConsultaPrePixController {
 
+    private final Consultaservice consultaservice;
     @PostMapping("/consulta")
-    public ConsultaPrePixResponse saveCadastro(@RequestBody ConsultaPrePixRequest cadastro) {
-        ResponseEntity<LoginResponse> response = null;
-        ConsultaPrePixResponse cadastroReponse = new ConsultaPrePixResponse();
-        ClienteDAO clienteDAO = new ClienteDAO();
-
-
-
-        try {
-            //validatoken
-
-           //consulta cliente
-           //consulta historico transferencia
-                    //consulta dados historico de cliente
-
-
-        } catch (Exception e) {
-            return obterRespostaErro("Serviço indisponível", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        return null;
+    public ResponseEntity<BaseResponse> saveCadastro(@RequestBody ConsultaPrePixRequest request) {
+        return ResponseEntity.ok(BaseResponse.ok(consultaservice.consulta(request)));
     }
 
     private ConsultaPrePixResponse obterRespostaErro(String msg, HttpStatus status) {

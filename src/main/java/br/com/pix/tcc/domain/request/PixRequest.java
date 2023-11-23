@@ -1,44 +1,45 @@
 package br.com.pix.tcc.domain.request;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.persistence.Entity;
 import lombok.Data;
 
 import javax.validation.constraints.Size;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 
+@Entity
 @Data
 public class PixRequest {
 
     @Size(min = 12, max = 15)
-    private String cpfRemetente;
+    private int cpf_remetente;
 
     @Size(min = 3, max = 50)
-    private String  nomeRemetente;
+    private String  nome_remetente;
 
     @Size(min = 3, max = 15)
-    private String chavepixRemetente;
+    private String chave_pix_remetente;
 
-    private String bancoRemetente;
-    private String bancoDestinatario;
-
-    @Size(min = 3, max = 50)
-    private String cpfDestinatario;
+    private String banco_remetente;
+    private String banco_destinatario;
 
     @Size(min = 3, max = 50)
-    private String  nomeDestinatario;
+    private int cpf_destinatario;
+
+    @Size(min = 3, max = 50)
+    private String  nome_Destinatario;
 
     private String observacao;
     @Size(min = 3, max = 50)
-    private String  chavePixDestinatario;
-    private Float valortransferencia;
+    private String  chave_pix_destinatario;
+    private Float valor_transferencia;
 
-    private String localizacaoTransferencia;
+    private String localizacao_ransferencia;
 
-    private String tipoTransferencia;
+    private String tipo_transferencia;
 
-    private String numeroContaPagador;
-    private String numeroContaRemetente;
+    private int numero_conta_pagador;
+    private int numero_conta_remetente;
+
+    private String idTransferencia;
     private Boolean rastreavel;
 
     private String senha;
@@ -46,6 +47,6 @@ public class PixRequest {
 
     private float limite_diario;
 
-    private LocalTime limite_noturno;
+    private float limite_noturno;
 
 }

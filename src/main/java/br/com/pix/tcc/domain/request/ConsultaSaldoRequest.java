@@ -10,5 +10,5 @@ public class ConsultaSaldoRequest {
 
     @NotBlank(message = "Digite um nome valido")
     @Size(min = 12, max = 15)
-    String cpf_cnpj;
+    int cpf_cnpj;
 }

@@ -11,4 +11,11 @@ public class Dados {
     String senhaSeguranca;
 
     String erro;
+
+    Float saldo;
+
+    Float limiteDiario;
+
+    Float limiteNoturno;
+
 }
