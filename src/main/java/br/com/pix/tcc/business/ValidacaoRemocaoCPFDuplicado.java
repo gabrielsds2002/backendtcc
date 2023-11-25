@@ -12,7 +12,7 @@ import java.util.Set;
 
 public class ValidacaoRemocaoCPFDuplicado {
     public static List<CpfJaEnviado> removerCPFDuplicado(List<CpfJaEnviado> cpfsEnviados) {
-        Set<Integer> cpfSet = new HashSet<>();
+        Set<String> cpfSet = new HashSet<>();
         List<CpfJaEnviado> cpfsSemDuplicatas = new ArrayList<>();
 
         for (CpfJaEnviado cpfEnviado : cpfsEnviados) {

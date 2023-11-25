@@ -2,9 +2,11 @@ package br.com.pix.tcc.dao;
 
 import br.com.pix.tcc.config.DatabaseConfig;
 import br.com.pix.tcc.domain.CpfJaEnviado;
+import br.com.pix.tcc.domain.Response.ConsultaDestinatarioResponse;
 import br.com.pix.tcc.domain.Response.ConsultaPrePixResponse;
 import br.com.pix.tcc.domain.request.CadastroRequest;
 import br.com.pix.tcc.domain.request.ConsultaPrePixRequest;
+import br.com.pix.tcc.domain.request.RastreavelRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -81,7 +83,7 @@ public class ConsultaPrePixDAO {
             rst = pstm.executeQuery();
             while (rst.next()) {
                 CpfJaEnviado response = new CpfJaEnviado(
-                        rst.getInt("cpf_cnpj_destinatario"),
+                        rst.getString("cpf_cnpj_destinatario"),
                         rst.getString("nome_destinatario"),
                         rst.getString("chave_pix_destinatario")
                 );
@@ -94,4 +96,45 @@ public class ConsultaPrePixDAO {
         }
         return cpfJaEnviado;
     }
+    public ConsultaDestinatarioResponse validaRemetente(ConsultaPrePixRequest cadastro) {
+
+        String sql = "SELECT nome,chave_pix,instituicao_financeira,numero_conta FROM consulta_basica_cliente WHERE cpf_cnpj = '" + cadastro.getCpf_cnpj() + "'";
+
+
+        List<CadastroRequest> cadastros = new ArrayList<CadastroRequest>();
+
+        Connection conn = null;
+        PreparedStatement pstm = null;
+        ResultSet rst = null;
+        ConsultaDestinatarioResponse consulta = new ConsultaDestinatarioResponse();
+        try {
+
+            conn = DatabaseConfig.criaConexao();
+            pstm = (PreparedStatement) conn.prepareStatement(sql);
+            rst = pstm.executeQuery();
+
+
+            while (rst.next()) {
+                consulta.setNome(rst.getString("nome"));
+                consulta.setNome(rst.getString("chave_pix"));
+                consulta.setInstituicao_financeira(rst.getString("instituicao_financeira"));
+                consulta.setNumeroContaRemetente(rst.getString("numero_conta"));
+            }
+            if (consulta !=null){
+                consulta.setMensagem("Usuario encontrado!");
+                consulta.setCodigo(HttpStatus.OK);
+                return consulta;
+            }else {
+                consulta.setMensagem("Senha Invalida");
+                consulta.setCodigo(HttpStatus.BAD_REQUEST);
+                return consulta;
+
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
 }

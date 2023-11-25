@@ -9,7 +9,7 @@ import lombok.Data;
 public class CpfJaEnviado {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Integer cpf_cnpj;
+    private String cpf_cnpj;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String nome;
 

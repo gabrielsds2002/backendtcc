@@ -9,14 +9,9 @@ import javax.validation.constraints.Size;
 @Data
 public class ConsultaPrePixRequest {
 
-    String tipoTransferencia;
 
-    String chavepix;
 
-    @NotBlank(message = "Digite um nome valido")
-    @Size(min = 12, max = 14)
-    @NotNull
-    private String cpf_cnpj;
+    String cpf_cnpj;
 
 
 }
