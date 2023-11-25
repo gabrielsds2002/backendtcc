@@ -10,7 +10,7 @@ import javax.validation.constraints.Size;
 public class PixRequest {
 
     @Size(min = 12, max = 15)
-    private int cpf_remetente;
+    private String cpf_remetente;
 
     @Size(min = 3, max = 50)
     private String  nome_remetente;
@@ -22,7 +22,7 @@ public class PixRequest {
     private String banco_destinatario;
 
     @Size(min = 3, max = 50)
-    private int cpf_destinatario;
+    private String cpf_destinatario;
 
     @Size(min = 3, max = 50)
     private String  nome_Destinatario;

@@ -20,9 +20,9 @@ public class RastreavelController {
 
 
     @GetMapping("/consulta")
-    public List<RastreavelConsultaResponse> consulta(){
+    public ResponseEntity consulta(){
         RastreavelDAO rastreavelDAO = new RastreavelDAO();
-        return rastreavelDAO.consultaTodosRastreavel();
+        return ResponseEntity.ok(rastreavelDAO.consultaTodosRastreavel());
     }
 
     @GetMapping("/consulta_cpf")

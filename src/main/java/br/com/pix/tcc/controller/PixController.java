@@ -28,7 +28,7 @@ public class PixController {
 
 
     @PostMapping("/pix")
-    public PixResponse login(@RequestBody PixRequest pixRequest) {
+    public ResponseEntity login(@RequestBody PixRequest pixRequest) {
         PixResponse response = new PixResponse();
         DoacaoDao doacaoDao= new DoacaoDao();
         PixDao pixDao = new PixDao();
@@ -40,7 +40,7 @@ public class PixController {
             //consulta clientes
             if (pixDao.consulta_clientes(pixRequest) == true) {
                 dados = pixDao.getDados(pixRequest.getCpf_remetente());
-                dados.setSaldo(ConsultaSaldoDao.consultaSaldo(pixRequest.getCpf_remetente()));
+                dados.setSaldo(ConsultaSaldoDao.consultaSaldo(pixRequest.getCpf_remetente()).getSaldo());
                 if (horaAtual.isAfter(horarioNoite)) {
                     if (dados.getLimiteDiario() > pixRequest.getValor_transferencia()) {
                         if (pixRequest.getSenha().equals(dados.getSenha())) {
@@ -52,10 +52,10 @@ public class PixController {
 
 
                         } else {
-                            return obterRespostaErro("senha invalida", HttpStatus.BAD_REQUEST);
+                            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(obterRespostaErro("senha invalida",HttpStatus.BAD_REQUEST));
                         }
                     } else {
-                        return obterRespostaErro("Valor da transferencia maior que o Limite diario", HttpStatus.BAD_REQUEST);
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(obterRespostaErro("Valor da transferencia maior que o Limite diario",HttpStatus.BAD_REQUEST));
                     }
                 } else {
                     if (dados.getLimiteDiario() > pixRequest.getValor_transferencia()) {
@@ -65,10 +65,12 @@ public class PixController {
                             rastreavel(pixRequest);
 
                         } else {
-                            return obterRespostaErro("senha invalida", HttpStatus.BAD_REQUEST);
+                            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(obterRespostaErro("senha invalida",HttpStatus.BAD_REQUEST));
                         }
                     } else {
-                        return obterRespostaErro("Valor da transferencia maior que o Limite diario", HttpStatus.BAD_REQUEST);
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(obterRespostaErro("Valor da transferencia maior que o Limite diario",HttpStatus.BAD_REQUEST));
+
+
                     }
                 }
             }
@@ -82,9 +84,11 @@ public class PixController {
             response.setCodigoValidacao(CodigoValidacao.gerarCodigoValidacao(10));
             response.setCodigo(HttpStatus.OK);
             doacaoDao.atualizaSaldoDoacao(calcular1Porcento(pixRequest.getValor_transferencia()));
-            return response;
+            return ResponseEntity.ok(response);
+
         } catch (Exception e) {
-            return obterRespostaErro("Serviço indisponível", HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(obterRespostaErro("Serviço indisponível",HttpStatus.BAD_REQUEST));
+
         }
 
     }

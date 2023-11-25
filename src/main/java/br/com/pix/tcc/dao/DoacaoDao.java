@@ -20,7 +20,7 @@ import java.util.List;
 public class DoacaoDao {
 
     public static String atualizaSaldoDoacao(float doacao) {
-        String sql = "INSERT INTO tcc.doacao (saldo) VALUES (" + doacao + ")";
+        String sql = "UPDATE doacao SET saldo = saldo +"+ doacao +"";
         ResultSet rst = null;
         Connection conn = null;
         PreparedStatement pstm = null;

@@ -25,10 +25,10 @@ public class PixResponse {
     private String  nomeRemetente;
 
     @Size(min = 12, max = 15)
-    private int cpfRemetente;
+    private String cpfRemetente;
 
     @Size(min = 3, max = 50)
-    private int cpfDestinatario;
+    private String cpfDestinatario;
 
     @Size(min = 3, max = 50)
     private String codigoValidacao;

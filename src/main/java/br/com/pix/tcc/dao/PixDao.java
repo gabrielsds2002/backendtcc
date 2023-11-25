@@ -62,7 +62,7 @@ public class PixDao {
         }
     }
 
-    public Dados getDados(int cpf){
+    public Dados getDados(String cpf){
 
         String sql = "SELECT senha,senha_seguranca,limite_diario,limite_noturno FROM consulta_basica_cliente WHERE cpf_cnpj ='"+ cpf +"'";
 
@@ -105,7 +105,7 @@ public class PixDao {
         }
     }
 
-    public Boolean consulta_rastreavel(int cpf) {
+    public Boolean consulta_rastreavel(String cpf) {
 
         String sql = "SELECT rastreavel FROM consulta_basica_cliente WHERE cpf_cnpj ='"+ cpf +"'";
 

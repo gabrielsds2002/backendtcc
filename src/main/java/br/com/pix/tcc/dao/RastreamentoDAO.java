@@ -23,8 +23,8 @@ public class RastreamentoDAO {
         try {
             conn = DatabaseConfig.criaConexao();
             pstm = (PreparedStatement) conn.prepareStatement(sql);
-            pstm.setInt(1, pixRequest.getCpf_remetente());
-            pstm.setInt(2, pixRequest.getCpf_destinatario());
+            pstm.setString(1, pixRequest.getCpf_remetente());
+            pstm.setString(2, pixRequest.getCpf_destinatario());
             pstm.setString(3, pixRequest.getLocalizacao_ransferencia());
             pstm.setString(4, pixRequest.getChave_pix_destinatario());
             pstm.setString(5, LocalDate.now().toString());
@@ -44,7 +44,7 @@ public class RastreamentoDAO {
         }
     }
 
-    public static String atualizaClienteRastreado(int cpf) {
+    public static String atualizaClienteRastreado(String cpf) {
         String sql = "UPDATE consulta_basica_cliente SET rastreavel = true WHERE cpf_cnpj = ?";
 
         ResultSet rst = null;
@@ -78,8 +78,8 @@ public class RastreamentoDAO {
         try {
             conn = DatabaseConfig.criaConexao();
             pstm = (PreparedStatement) conn.prepareStatement(sql);
-            pstm.setInt(1, pixRequest.getCpf_remetente());
-            pstm.setInt(2, pixRequest.getCpf_destinatario());
+            pstm.setString(1, pixRequest.getCpf_remetente());
+            pstm.setString(2, pixRequest.getCpf_destinatario());
             pstm.setString(3, pixRequest.getLocalizacao_ransferencia());
             pstm.setString(4, pixRequest.getChave_pix_destinatario());
             pstm.setString(5, LocalDate.now().toString());
@@ -111,8 +111,8 @@ public class RastreamentoDAO {
         try {
             conn = DatabaseConfig.criaConexao();
             pstm = (PreparedStatement) conn.prepareStatement(sql);
-            pstm.setInt(1, pixRequest.getCpf_remetente());
-            pstm.setInt(2, pixRequest.getCpf_destinatario());
+            pstm.setString(1, pixRequest.getCpf_remetente());
+            pstm.setString(2, pixRequest.getCpf_destinatario());
             pstm.setString(3, pixRequest.getNome_Destinatario());
             pstm.setString(4, pixRequest.getChave_pix_destinatario());
 

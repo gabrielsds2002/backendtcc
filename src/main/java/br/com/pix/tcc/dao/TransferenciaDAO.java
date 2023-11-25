@@ -45,7 +45,7 @@ public class TransferenciaDAO {
         try {
             conn = DatabaseConfig.criaConexao();
             pstm = (PreparedStatement) conn.prepareStatement(sql);
-            pstm.setInt(1, pixRequest.getCpf_remetente());
+            pstm.setString(1, pixRequest.getCpf_remetente());
             pstm.setString(2, LocalDate.now().toString());
             pstm.setString(3, LocalTime.now().toString());
             pstm.setString(4, pixRequest.getLocalizacao_ransferencia());
@@ -78,8 +78,8 @@ public class TransferenciaDAO {
         try {
             conn = DatabaseConfig.criaConexao();
             pstm = (PreparedStatement) conn.prepareStatement(sql);
-            pstm.setInt(1, pixRequest.getCpf_remetente());
-            pstm.setInt(2, pixRequest.getCpf_destinatario());
+            pstm.setString(1, pixRequest.getCpf_remetente());
+            pstm.setString(2, pixRequest.getCpf_destinatario());
             pstm.setString(3, pixRequest.getNome_Destinatario());
             pstm.setString(4, pixRequest.getChave_pix_destinatario());
 
@@ -96,7 +96,7 @@ public class TransferenciaDAO {
         }
     }
 
-    public static void atualizarSaldoSoma(int cpf, int numeroConta, Float valorParaAdicionar) {
+    public static void atualizarSaldoSoma(String cpf, int numeroConta, Float valorParaAdicionar) {
 
             String sql = "UPDATE consulta_basica_cliente SET saldo = saldo + ? WHERE cpf_cnpj = ? AND numero_conta = ?";
 
@@ -121,7 +121,7 @@ public class TransferenciaDAO {
     }
 
 
-    public static void atualizarSaldo(int cpf, int numeroConta, Float valorParaAdicionar) {
+    public static void atualizarSaldo(String cpf, int numeroConta, Float valorParaAdicionar) {
 
         String sql = "UPDATE consulta_basica_cliente SET saldo = saldo - ? WHERE cpf_cnpj = ? AND numero_conta = ?";
 

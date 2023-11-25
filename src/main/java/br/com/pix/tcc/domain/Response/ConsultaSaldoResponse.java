@@ -17,4 +17,6 @@ public class ConsultaSaldoResponse {
     private String mensagem;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private HttpStatus codigo;
+
+    String cpf_cnpj;
 }

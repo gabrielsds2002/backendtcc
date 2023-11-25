@@ -47,8 +47,6 @@ public class LoginDao {
 
                 consulta.setCpf_cnpj(String.valueOf(rst.getInt("cpf_cnpj")));
                 consulta.setSenha(rst.getString("senha_app"));
-                response.setNome(rst.getString("nome")+" "+ rst.getString("sobrenome"));
-
 
                 System.out.println(consulta.getSenha());
 
@@ -59,6 +57,7 @@ public class LoginDao {
 
             if (consulta.getCpf_cnpj() == null) {
                 loginResponse.setMensagem("Usuario não encontrado");
+                loginResponse.setStatus(false);
                 return loginResponse;
             } else {
                 System.out.println(consulta.getSenha());
@@ -66,17 +65,13 @@ public class LoginDao {
                 System.out.println(consulta.getSenha());
                 System.out.println(login.getSenha());
                 if(consulta.getSenha().contains(login.getSenha())){
-
                     loginResponse.setMensagem("Usuario encontrado!");
-                    loginResponse.setNome(response.getNome());
-
-
+                    loginResponse.setStatus(true);
                     return loginResponse;
 
                 }else{
                     loginResponse.setMensagem("Senha Invalida");
-                    loginResponse.setNome(response.getNome());
-
+                    loginResponse.setStatus(false);
                     return loginResponse;
                 }
 

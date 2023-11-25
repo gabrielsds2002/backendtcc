@@ -7,6 +7,7 @@ import br.com.pix.tcc.domain.request.CadastroRequest;
 import br.com.pix.tcc.domain.request.ConsultaPrePixRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
@@ -49,9 +50,16 @@ public class ConsultaPrePixDAO {
                 consulta.setInstituicao_financeira(rst.getString("instituicao_financeira"));
                 consulta.setNumeroContaRemetente(rst.getString("numero_conta"));
             }
+            if (consulta !=null){
+                consulta.setMensagem("Usuario encontrado!");
+                consulta.setCodigo(HttpStatus.OK);
+                return consulta;
+            }else {
+                consulta.setMensagem("Senha Invalida");
+                consulta.setCodigo(HttpStatus.BAD_REQUEST);
+                return consulta;
 
-            return consulta;
-
+            }
 
         } catch (Exception e) {
             e.printStackTrace();

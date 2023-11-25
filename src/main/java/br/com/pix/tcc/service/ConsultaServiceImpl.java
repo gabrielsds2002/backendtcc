@@ -17,30 +17,40 @@ import java.util.List;
 public class ConsultaServiceImpl implements Consultaservice {
 
 
-     ValidacaoRemocaoCPFDuplicado validacaoRemocaoCPFDuplicado;
-
+    ValidacaoRemocaoCPFDuplicado validacaoRemocaoCPFDuplicado;
 
 
     @Override
     public ConsultaPrePixResponse consulta(ConsultaPrePixRequest request) {
         ResponseEntity<LoginResponse> response = null;
         ConsultaPrePixResponse cadastroReponse = new ConsultaPrePixResponse();
-        List<CpfJaEnviado> cpfJaEnviado= new ArrayList<>();
+        List<CpfJaEnviado> cpfJaEnviado = new ArrayList<>();
         ConsultaPrePixDAO consulta = new ConsultaPrePixDAO();
         try {
             //validatoken
 
-            cadastroReponse= consulta.validaCadastro(request);
-            cpfJaEnviado= consulta.historico(request);
-            List<CpfJaEnviado> cpfsSemDuplicatas = validacaoRemocaoCPFDuplicado.removerCPFDuplicado(cpfJaEnviado);
-            //validacaoRemocaoCPFDuplicado.removerCPFDuplicado(cpfJaEnviado);
-            cadastroReponse.setCpfJaEnviado(cpfsSemDuplicatas);
-            cadastroReponse.setCodigo(HttpStatus.OK);
+            cadastroReponse = consulta.validaCadastro(request);
+            if (cadastroReponse.getCodigo() == HttpStatus.OK) {
+                cpfJaEnviado = consulta.historico(request);
+                List<CpfJaEnviado> cpfsSemDuplicatas = validacaoRemocaoCPFDuplicado.removerCPFDuplicado(cpfJaEnviado);
+                if (cpfsSemDuplicatas != null) {
+                    //validacaoRemocaoCPFDuplicado.removerCPFDuplicado(cpfJaEnviado);
+                    cadastroReponse.setCpfJaEnviado(cpfsSemDuplicatas);
+                    return cadastroReponse;
+                } else {
+                    return cadastroReponse;
+                }
+            } else {
+                cadastroReponse.setMensagem("erro ao consultar historico");
+                cadastroReponse.getCodigo();
+                return cadastroReponse;
+            }
 
 
         } catch (Exception e) {
             //return obterRespostaErro("Serviço indisponível", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
         return cadastroReponse;
     }
 }

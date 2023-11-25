@@ -17,27 +17,34 @@ import java.sql.ResultSet;
 @RequiredArgsConstructor
 public class ConsultaSaldoDao {
 
-    public static float consultaSaldo(int cpf) {
-        String sql = "SELECT saldo FROM consulta_basica_cliente WHERE cpf_cnpj = '" + cpf + "'";
+    public static ConsultaSaldoResponse consultaSaldo(String cpf) {
+        String sql = "SELECT saldo,cpf_cnpj FROM consulta_basica_cliente WHERE cpf_cnpj = '" + cpf + "'";
         Connection conn = null;
         PreparedStatement pstm = null;
         ResultSet rst = null;
+        ConsultaSaldoResponse consulta = new ConsultaSaldoResponse();
         try {
             conn = DatabaseConfig.criaConexao();
             pstm = (PreparedStatement) conn.prepareStatement(sql);
             rst = pstm.executeQuery();
-            ConsultaSaldoResponse consulta = new ConsultaSaldoResponse();
+
             while (rst.next()) {
                 consulta.setSaldo(rst.getInt("saldo"));
+                consulta.setCpf_cnpj(rst.getString("cpf_cnpj"));
             }
-
-            consulta.setMensagem("Sucesso ao recuperar saldo!!!");
-            consulta.setCodigo(HttpStatus.OK);
-            return consulta.getSaldo();
+            if (consulta.getCpf_cnpj() != null) {
+                consulta.setMensagem("Sucesso ao recuperar saldo!!!");
+                consulta.setCodigo(HttpStatus.OK);
+                return consulta;
+            }else {
+                consulta.setMensagem("Falha ao recuperar saldo!!!");
+                consulta.setCodigo(HttpStatus.BAD_REQUEST);
+                return consulta;
+            }
         } catch (Exception e) {
-            e.printStackTrace();
-
-            throw new RuntimeException(e);
+            consulta.setMensagem("Falha ao recuperar saldo!!!");
+            consulta.setCodigo(HttpStatus.BAD_REQUEST);
+            return consulta;
         }
 
     }

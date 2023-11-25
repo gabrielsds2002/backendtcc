@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
 
 @Data
 @AllArgsConstructor
@@ -11,14 +12,15 @@ import lombok.NoArgsConstructor;
 public class LoginResponse {
 
 
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String nome;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String mensagem;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private int codigo;
+    private Boolean status;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String token;
+    private HttpStatus codigo;
+
+
 }
 
