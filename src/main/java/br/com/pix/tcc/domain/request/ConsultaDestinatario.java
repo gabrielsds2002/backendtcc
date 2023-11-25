@@ -7,9 +7,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Data
-public class ConsultaPrePixRequest {
-
-    String tipoTransferencia;
+public class ConsultaDestinatario {
 
     String chavepix;
 
@@ -17,6 +15,4 @@ public class ConsultaPrePixRequest {
     @Size(min = 12, max = 14)
     @NotNull
     private String cpf_cnpj;
-
-
 }

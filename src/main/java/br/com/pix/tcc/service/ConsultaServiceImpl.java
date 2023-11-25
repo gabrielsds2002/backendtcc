@@ -6,6 +6,7 @@ import br.com.pix.tcc.domain.CpfJaEnviado;
 import br.com.pix.tcc.domain.Response.ConsultaDestinatarioResponse;
 import br.com.pix.tcc.domain.Response.ConsultaPrePixResponse;
 import br.com.pix.tcc.domain.Response.LoginResponse;
+import br.com.pix.tcc.domain.request.ConsultaDestinatario;
 import br.com.pix.tcc.domain.request.ConsultaPrePixRequest;
 import br.com.pix.tcc.domain.request.RastreavelRequest;
 import org.springframework.http.HttpStatus;
@@ -57,7 +58,7 @@ public class ConsultaServiceImpl implements Consultaservice {
     }
 
     @Override
-    public ConsultaDestinatarioResponse consultaRemetente(ConsultaPrePixRequest request) {
+    public ConsultaDestinatarioResponse consultaRemetente(ConsultaDestinatario request) {
         ResponseEntity<LoginResponse> response = null;
         ConsultaDestinatarioResponse cadastroReponse = new ConsultaDestinatarioResponse();
         ConsultaPrePixDAO consulta = new ConsultaPrePixDAO();

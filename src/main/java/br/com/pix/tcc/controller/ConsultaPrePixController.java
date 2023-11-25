@@ -10,6 +10,7 @@ import br.com.pix.tcc.domain.Response.ErroResponse;
 import br.com.pix.tcc.domain.Response.LoginResponse;
 import br.com.pix.tcc.domain.data.ConsultaPrePixData;
 import br.com.pix.tcc.domain.request.CadastroRequest;
+import br.com.pix.tcc.domain.request.ConsultaDestinatario;
 import br.com.pix.tcc.domain.request.ConsultaPrePixRequest;
 import br.com.pix.tcc.domain.request.RastreavelRequest;
 import br.com.pix.tcc.service.Consultaservice;
@@ -25,7 +26,7 @@ public class ConsultaPrePixController {
     private final Consultaservice consultaservice;
     @PostMapping("/consulta")
     public ResponseEntity consultaDados(@RequestHeader("Authorization") String token,
-                                                     ConsultaPrePixRequest request) {
+                                                  @RequestBody ConsultaPrePixRequest request) {
         String valida;
         valida= ValidadorCPF_CNPJ.validarCPF(request.getCpf_cnpj());
         if(valida == "Valor valido") {
@@ -43,7 +44,7 @@ public class ConsultaPrePixController {
 
     @GetMapping("/consulta_destinatario")
     public ResponseEntity ConsultaDadosEnvio(@RequestHeader("Authorization") String token,
-                                             ConsultaPrePixRequest request) {
+                                             ConsultaDestinatario request) {
         String valida;
         valida= ValidadorCPF_CNPJ.validarCPF(request.getCpf_cnpj());
         if(valida == "Valor valido") {

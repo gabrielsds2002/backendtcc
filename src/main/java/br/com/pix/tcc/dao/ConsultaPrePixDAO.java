@@ -5,6 +5,7 @@ import br.com.pix.tcc.domain.CpfJaEnviado;
 import br.com.pix.tcc.domain.Response.ConsultaDestinatarioResponse;
 import br.com.pix.tcc.domain.Response.ConsultaPrePixResponse;
 import br.com.pix.tcc.domain.request.CadastroRequest;
+import br.com.pix.tcc.domain.request.ConsultaDestinatario;
 import br.com.pix.tcc.domain.request.ConsultaPrePixRequest;
 import br.com.pix.tcc.domain.request.RastreavelRequest;
 import lombok.RequiredArgsConstructor;
@@ -96,9 +97,9 @@ public class ConsultaPrePixDAO {
         }
         return cpfJaEnviado;
     }
-    public ConsultaDestinatarioResponse validaRemetente(ConsultaPrePixRequest cadastro) {
+    public ConsultaDestinatarioResponse validaRemetente(ConsultaDestinatario cadastro) {
 
-        String sql = "SELECT nome,chave_pix,instituicao_financeira,numero_conta FROM consulta_basica_cliente WHERE cpf_cnpj = '" + cadastro.getCpf_cnpj() + "'";
+        String sql = "SELECT nome,chave_pix,instituicao_financeira,numero_conta FROM consulta_basica_cliente WHERE tipo_chave_pix = '" + cadastro.getChavepix() + "'";
 
 
         List<CadastroRequest> cadastros = new ArrayList<CadastroRequest>();
