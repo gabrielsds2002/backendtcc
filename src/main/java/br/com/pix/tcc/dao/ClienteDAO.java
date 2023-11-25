@@ -21,6 +21,8 @@ public class ClienteDAO {
 
     private Cript cript;
 
+    ValidadorCPF_CNPJ cpf_cnpj;
+
     private ValidadorCPF_CNPJ validadorCPFCnpj;
 
     public String cria(CadastroRequest cadastro) {
@@ -50,7 +52,7 @@ public class ClienteDAO {
             pstm.setString(11, cript.encryptIntToBase64(cadastro.getPais()));
             pstm.setString(12, cript.encryptIntToBase64(cadastro.getEstado_civil()));
             pstm.setInt(13, cadastro.getIdade());
-            pstm.setString(14,  cadastro.getCpf_cnpj());
+            pstm.setString(14, cpf_cnpj.limparCaracteresEspeciais(cadastro.getCpf_cnpj()));
             pstm.setString(15, cript.encryptIntToBase64(cadastro.getData_nac_criacao()));
             pstm.setInt(16, cadastro.getCep());
             pstm.setString(17, cadastro.getChave_pix());
@@ -100,7 +102,7 @@ public class ClienteDAO {
             while (rst.next()) {
 
 
-                consulta.setCpf_cnpj(String.valueOf(rst.getInt("cpf_cnpj")));
+                consulta.setCpf_cnpj(rst.getString("cpf_cnpj"));
                 consulta.setNome(rst.getString("senha_app"));
                 System.out.println(cadastro.getCpf_cnpj());
 

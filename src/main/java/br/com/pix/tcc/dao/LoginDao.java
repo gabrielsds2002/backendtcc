@@ -1,6 +1,7 @@
 package br.com.pix.tcc.dao;
 
 import br.com.pix.tcc.business.Cript;
+import br.com.pix.tcc.business.ValidadorCPF_CNPJ;
 import br.com.pix.tcc.config.DatabaseConfig;
 import br.com.pix.tcc.config.TokenConfig;
 import br.com.pix.tcc.domain.Response.LoginResponse;
@@ -24,7 +25,10 @@ public class LoginDao {
 
     TokenConfig tokenConfig;
     private Cript cript;
+
+    ValidadorCPF_CNPJ validadorCPFCnpj;
     public LoginResponse login(LoginRequest login) {
+        login.setCpf_cnpj(validadorCPFCnpj.limparCaracteresEspeciais(login.getCpf_cnpj()));
         String sql = "SELECT * FROM consulta_basica_cliente WHERE cpf_cnpj = '" + login.getCpf_cnpj() + "'";
         LoginResponse loginResponse = new LoginResponse();
 
@@ -45,7 +49,7 @@ public class LoginDao {
             while (rst.next()) {
 
 
-                consulta.setCpf_cnpj(String.valueOf(rst.getInt("cpf_cnpj")));
+                consulta.setCpf_cnpj(rst.getString("cpf_cnpj"));
                 consulta.setSenha(rst.getString("senha_app"));
 
                 System.out.println(consulta.getSenha());

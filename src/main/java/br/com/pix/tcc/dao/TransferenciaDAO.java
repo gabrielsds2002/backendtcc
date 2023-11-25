@@ -1,25 +1,17 @@
 package br.com.pix.tcc.dao;
 
-import br.com.pix.tcc.business.CodigoValidacao;
+import br.com.pix.tcc.business.Formata;
 import br.com.pix.tcc.config.DatabaseConfig;
-import br.com.pix.tcc.domain.Response.ConsultaSaldoResponse;
-import br.com.pix.tcc.domain.Response.PixResponse;
-import br.com.pix.tcc.domain.request.ConsultaSaldoRequest;
 import br.com.pix.tcc.domain.request.PixRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.security.SecureRandom;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Random;
-
 
 
 @Slf4j
@@ -28,7 +20,7 @@ import java.util.Random;
 public class TransferenciaDAO {
 
 
-
+    static Formata formata;
 
     public static String pixResponse(PixRequest pixRequest) {
         String sql = "INSERT INTO dados_rastreamento (cpf_cnpj, data_transferencia, hora_transderencia, localizacao_transferencia," +
@@ -36,6 +28,7 @@ public class TransferenciaDAO {
         ResultSet rst = null;
         Connection conn = null;
         PreparedStatement pstm = null;
+
         if (pixRequest.getRastreavel()==null){
             pixRequest.setRastreavel(false);
         }
@@ -46,8 +39,8 @@ public class TransferenciaDAO {
             conn = DatabaseConfig.criaConexao();
             pstm = (PreparedStatement) conn.prepareStatement(sql);
             pstm.setString(1, pixRequest.getCpf_remetente());
-            pstm.setString(2, LocalDate.now().toString());
-            pstm.setString(3, LocalTime.now().toString());
+            pstm.setString(2, formata.formatarLocalDate(LocalDate.now()));
+            pstm.setString(3, formata.formatarLocalTime(LocalTime.now()));
             pstm.setString(4, pixRequest.getLocalizacao_ransferencia());
             pstm.setString(5, pixRequest.getTipo_transferencia());
             pstm.setInt(6, pixRequest.getNumero_conta_pagador());
@@ -107,7 +100,7 @@ public class TransferenciaDAO {
                 conn = DatabaseConfig.criaConexao();
                 pstm = (PreparedStatement) conn.prepareStatement(sql);
                 pstm.setFloat(1, valorParaAdicionar);
-                pstm.setString(2, String.valueOf(cpf));
+                pstm.setString(2, cpf);
                 pstm.setInt(3, numeroConta);
                 pstm.execute();
 
@@ -132,7 +125,7 @@ public class TransferenciaDAO {
             conn = DatabaseConfig.criaConexao();
             pstm = (PreparedStatement) conn.prepareStatement(sql);
             pstm.setFloat(1, valorParaAdicionar);
-            pstm.setString(2, String.valueOf(cpf));
+            pstm.setString(2, cpf);
             pstm.setInt(3, numeroConta);
             pstm.execute();
 

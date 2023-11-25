@@ -16,7 +16,7 @@ public class ConsultaPrePixRequest {
     @NotBlank(message = "Digite um nome valido")
     @Size(min = 12, max = 14)
     @NotNull
-    private Integer cpf_cnpj;
+    private String cpf_cnpj;
 
 
 }

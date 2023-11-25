@@ -42,7 +42,7 @@ public class PixDao {
             CadastroRequest consulta = new CadastroRequest();
 
             while (rst.next()) {
-                consulta.setCpf_cnpj(String.valueOf(rst.getInt("cpf_cnpj")));
+                consulta.setCpf_cnpj(rst.getString("cpf_cnpj"));
                 consulta.setSenha_app(rst.getString("senha_app"));
                 contador++;
             }

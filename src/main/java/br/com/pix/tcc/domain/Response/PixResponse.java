@@ -16,7 +16,10 @@ import java.time.format.DateTimeFormatter;
 public class PixResponse {
 
     private Float valortransferencia;
-    private LocalTime dataHoraTransferencia;
+    private String dataTransferencia;
+
+
+    private String horaTransferencia;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String  nomeDestinatario;

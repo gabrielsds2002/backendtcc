@@ -1,20 +1,22 @@
 package br.com.pix.tcc.controller;
 
 import br.com.pix.tcc.business.CodigoValidacao;
+import br.com.pix.tcc.business.Formata;
+import br.com.pix.tcc.business.ValidadorCPF_CNPJ;
+import br.com.pix.tcc.config.JwtGenerator;
 import br.com.pix.tcc.dao.*;
 import br.com.pix.tcc.domain.Response.CadastroReponse;
+import br.com.pix.tcc.domain.Response.ErroResponse;
 import br.com.pix.tcc.domain.Response.PixResponse;
 import br.com.pix.tcc.domain.Dados;
 import br.com.pix.tcc.domain.request.PixRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.SecureRandom;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Random;
 
@@ -26,9 +28,14 @@ public class PixController {
 
     Dados dados;
 
+    Formata formata;
+
+    ValidadorCPF_CNPJ validadorCPFCnpj;
+
 
     @PostMapping("/pix")
-    public ResponseEntity login(@RequestBody PixRequest pixRequest) {
+    public ResponseEntity login(@RequestHeader("Authorization") String token,
+                                @RequestBody PixRequest pixRequest) {
         PixResponse response = new PixResponse();
         DoacaoDao doacaoDao= new DoacaoDao();
         PixDao pixDao = new PixDao();
@@ -37,57 +44,71 @@ public class PixController {
 
 
         try {
-            //consulta clientes
-            if (pixDao.consulta_clientes(pixRequest) == true) {
-                dados = pixDao.getDados(pixRequest.getCpf_remetente());
-                dados.setSaldo(ConsultaSaldoDao.consultaSaldo(pixRequest.getCpf_remetente()).getSaldo());
-                if (horaAtual.isAfter(horarioNoite)) {
-                    if (dados.getLimiteDiario() > pixRequest.getValor_transferencia()) {
-                        if (pixRequest.getSenha().equals(dados.getSenha())) {
-                            Validarastreavel(pixRequest);
-                            tranferencia(pixRequest);
-                        } else if (pixRequest.getSenha().equals(dados.getSenhaSeguranca())) {
-                            rastreavel(pixRequest);
-                            tranferencia(pixRequest);
+            String valida;
+            valida= ValidadorCPF_CNPJ.validarCPF(pixRequest.getCpf_destinatario());
+            if(valida == "Valor valido") {
+                pixRequest.setChave_pix_destinatario(validadorCPFCnpj.limparCaracteresEspeciais(pixRequest.getCpf_destinatario()));
+                pixRequest.setChave_pix_remetente(validadorCPFCnpj.limparCaracteresEspeciais(pixRequest.getChave_pix_remetente()));
+                pixRequest.setCpf_remetente(ValidadorCPF_CNPJ.limparCaracteresEspeciais(pixRequest.getCpf_remetente()));
+                String getToken = JwtGenerator.validaToken(token, pixRequest.getCpf_remetente());
+                if (getToken == "Token valido") {
+                    if (pixDao.consulta_clientes(pixRequest) == true) {
+                        dados = pixDao.getDados(pixRequest.getCpf_remetente());
+                        dados.setSaldo(ConsultaSaldoDao.consultaSaldo(pixRequest.getCpf_remetente()).getSaldo());
+                        if (horaAtual.isAfter(horarioNoite)) {
+                            if (dados.getLimiteDiario() > pixRequest.getValor_transferencia()) {
+                                if (pixRequest.getSenha().equals(dados.getSenha())) {
+                                    Validarastreavel(pixRequest);
+                                    tranferencia(pixRequest);
+                                } else if (pixRequest.getSenha().equals(dados.getSenhaSeguranca())) {
+                                    rastreavel(pixRequest);
+                                    tranferencia(pixRequest);
 
 
+                                } else {
+                                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(obterRespostaErroRes("senha invalida", HttpStatus.BAD_REQUEST));
+                                }
+                            } else {
+                                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(obterRespostaErroRes("Valor da transferencia maior que o Limite diario", HttpStatus.BAD_REQUEST));
+                            }
                         } else {
-                            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(obterRespostaErro("senha invalida",HttpStatus.BAD_REQUEST));
+                            if (dados.getLimiteDiario() > pixRequest.getValor_transferencia()) {
+                                if (pixRequest.getSenha().equals(dados.getSenha())) {
+                                    tranferencia(pixRequest);
+                                } else if (pixRequest.getSenha().equals(dados.getSenhaSeguranca())) {
+                                    rastreavel(pixRequest);
+
+                                } else {
+                                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(obterRespostaErroRes("senha invalida", HttpStatus.BAD_REQUEST));
+                                }
+                            } else {
+                                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(obterRespostaErroRes("Valor da transferencia maior que o Limite diario", HttpStatus.BAD_REQUEST));
+
+
+                            }
                         }
-                    } else {
-                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(obterRespostaErro("Valor da transferencia maior que o Limite diario",HttpStatus.BAD_REQUEST));
                     }
+                    response.setCpfRemetente(formata.formatarCPF(pixRequest.getCpf_remetente()));
+                    response.setCpfDestinatario(formata.formatarCPF(pixRequest.getCpf_destinatario()));
+                    response.setValortransferencia(pixRequest.getValor_transferencia());
+                    response.setHoraTransferencia(formata.formatarLocalTime(LocalTime.now()));
+                    response.setDataTransferencia(formata.formatarLocalDate(LocalDate.now()));
+                    response.setNomeDestinatario(pixRequest.getNome_Destinatario());
+                    response.setNomeRemetente(pixRequest.getNome_remetente());
+                    response.setMensagem("Transferencia concluida com sucesso");
+                    response.setCodigoValidacao(CodigoValidacao.gerarCodigoValidacao(10));
+                    response.setCodigo(HttpStatus.OK);
+                    doacaoDao.atualizaSaldoDoacao(calcular1Porcento(pixRequest.getValor_transferencia()));
+                    return ResponseEntity.ok(response);
                 } else {
-                    if (dados.getLimiteDiario() > pixRequest.getValor_transferencia()) {
-                        if (pixRequest.getSenha().equals(dados.getSenha())) {
-                            tranferencia(pixRequest);
-                        } else if (pixRequest.getSenha().equals(dados.getSenhaSeguranca())) {
-                            rastreavel(pixRequest);
-
-                        } else {
-                            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(obterRespostaErro("senha invalida",HttpStatus.BAD_REQUEST));
-                        }
-                    } else {
-                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(obterRespostaErro("Valor da transferencia maior que o Limite diario",HttpStatus.BAD_REQUEST));
-
-
-                    }
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(obterRespostaErroRes(getToken, HttpStatus.UNAUTHORIZED));
                 }
+            }else{
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(obterRespostaErro(valida, HttpStatus.UNPROCESSABLE_ENTITY));
             }
-            response.setCpfRemetente(pixRequest.getCpf_remetente());
-            response.setCpfDestinatario(pixRequest.getCpf_destinatario());
-            response.setValortransferencia(pixRequest.getValor_transferencia());
-            response.setDataHoraTransferencia(LocalTime.now());
-            response.setNomeDestinatario(pixRequest.getNome_Destinatario());
-            response.setNomeRemetente(pixRequest.getNome_remetente());
-            response.setMensagem("Transferencia concluida com sucesso");
-            response.setCodigoValidacao(CodigoValidacao.gerarCodigoValidacao(10));
-            response.setCodigo(HttpStatus.OK);
-            doacaoDao.atualizaSaldoDoacao(calcular1Porcento(pixRequest.getValor_transferencia()));
-            return ResponseEntity.ok(response);
 
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(obterRespostaErro("Serviço indisponível",HttpStatus.BAD_REQUEST));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(obterRespostaErroRes("Serviço indisponível",HttpStatus.BAD_REQUEST));
 
         }
 
@@ -147,6 +168,13 @@ public class PixController {
         obterResposta.setMensagem(msg);
         obterResposta.setCodigo(HttpStatus.valueOf(status.value()));
         response = obterResposta;
+        return response;
+    }
+
+    private ErroResponse obterRespostaErroRes(String msg, HttpStatus status) {
+        ErroResponse response = new ErroResponse();
+        response.setMensagem(msg);
+        response.setCodigo(HttpStatus.valueOf(status.value()));
         return response;
     }
 

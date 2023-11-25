@@ -26,7 +26,10 @@ public class cadastroController {
 
 
         try {
-//            ValidadorCPF_CNPJ.validarCPF(cadastro.getCpf_cnpj());
+            String valida;
+            valida= ValidadorCPF_CNPJ.validarCPF(cadastro.getCpf_cnpj());
+            if(valida == "Valor valido") {
+                cadastro.setCpf_cnpj(ValidadorCPF_CNPJ.limparCaracteresEspeciais(cadastro.getCpf_cnpj()));
                 if (clienteDAO.validaCadastro(cadastro) == true) {
                     cadastroReponse.setMensagem(clienteDAO.cria(cadastro));
                     cadastroReponse.setCodigo(HttpStatus.OK);
@@ -35,6 +38,10 @@ public class cadastroController {
                     return obterRespostaErro("CPF ja cadastrado", HttpStatus.UNPROCESSABLE_ENTITY);
                 }
 
+            }else{
+                return obterRespostaErro(valida, HttpStatus.UNPROCESSABLE_ENTITY);
+
+            }
         } catch (Exception e) {
             return obterRespostaErro("Serviço indisponível", HttpStatus.INTERNAL_SERVER_ERROR);
         }
