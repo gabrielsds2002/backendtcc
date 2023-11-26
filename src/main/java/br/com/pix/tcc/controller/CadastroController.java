@@ -2,19 +2,17 @@ package br.com.pix.tcc.controller;
 
 import br.com.pix.tcc.business.ValidadorCPF_CNPJ;
 import br.com.pix.tcc.dao.ClienteDAO;
-import br.com.pix.tcc.domain.Response.LoginResponse;
 import br.com.pix.tcc.domain.request.CadastroRequest;
 import br.com.pix.tcc.domain.Response.CadastroReponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-public class cadastroController {
+public class CadastroController {
 
     ValidadorCPF_CNPJ validadorCPFCnpj;
 

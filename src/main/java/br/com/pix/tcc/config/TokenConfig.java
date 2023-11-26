@@ -13,7 +13,7 @@ public class TokenConfig {
     private static final String SECRET = "secretpassword";
 
     public  String generateJwtToken() {
-        Date expirationTime = new Date(System.currentTimeMillis() + 600000); // 10 minutos em milissegundos
+        Date expirationTime = new Date(System.currentTimeMillis() + 600000);
         String token = JWT.create()
                 .withExpiresAt(expirationTime)
                 .sign(Algorithm.HMAC256(SECRET));

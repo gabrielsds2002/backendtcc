@@ -11,6 +11,8 @@ public class ConsultaDestinatario {
 
     String chavepix;
 
+    String tipoChavePix;
+
     @NotBlank(message = "Digite um nome valido")
     @Size(min = 12, max = 14)
     @NotNull

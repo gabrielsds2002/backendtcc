@@ -14,15 +14,11 @@ public class ValidacaoRemocaoCPFDuplicado {
     public static List<CpfJaEnviado> removerCPFDuplicado(List<CpfJaEnviado> cpfsEnviados) {
         Set<String> cpfSet = new HashSet<>();
         List<CpfJaEnviado> cpfsSemDuplicatas = new ArrayList<>();
-
         for (CpfJaEnviado cpfEnviado : cpfsEnviados) {
-            // Verifica se o CPF já existe no conjunto
             if (cpfSet.add(cpfEnviado.getCpf_cnpj())) {
-                // Se conseguir adicionar ao conjunto, CPF é único, adiciona à lista
                 cpfsSemDuplicatas.add(cpfEnviado);
             }
         }
-
         return cpfsSemDuplicatas;
     }
 
