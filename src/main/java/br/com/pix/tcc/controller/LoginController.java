@@ -35,7 +35,8 @@ public class LoginController {
             loginResponse = loginDao.login(loginRequest);
             if (loginResponse.getStatus() == true) {
                 String token = JwtGenerator.getToken(loginRequest.getCpf_cnpj());
-                return ResponseEntity.ok(token);
+                loginResponse.setToken(token);
+                return ResponseEntity.ok(loginResponse);
             } else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(obterRespostaErro(loginResponse.getMensagem(), HttpStatus.BAD_REQUEST));
             }

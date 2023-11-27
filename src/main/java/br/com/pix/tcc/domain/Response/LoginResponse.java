@@ -14,6 +14,9 @@ public class LoginResponse {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String mensagem;
+    
+     @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String token;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Boolean status;
