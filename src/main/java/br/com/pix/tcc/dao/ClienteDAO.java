@@ -55,7 +55,7 @@ public class ClienteDAO {
             pstm.setString(14, cpf_cnpj.limparCaracteresEspeciais(cadastro.getCpf_cnpj()));
             pstm.setString(15, cript.encryptIntToBase64(cadastro.getData_nac_criacao()));
             pstm.setInt(16, cadastro.getCep());
-            pstm.setString(17, cadastro.getChave_pix());
+            pstm.setString(17, validadorCPFCnpj.limparCaracteresEspeciais(cadastro.getChave_pix()));
             pstm.setFloat(18, cadastro.getLimite_diario());
             pstm.setFloat(19, cadastro.getLimite_noturno());
             pstm.setString(20, cript.encryptIntToBase64(cadastro.getSenha_transacoes()));
