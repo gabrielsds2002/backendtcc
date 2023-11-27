@@ -61,8 +61,8 @@ public class TransferenciaDAO {
     }
 
     public static String atualizaHistorico(PixRequest pixRequest) {
-        String sql = "INSERT INTO historico (cpf_cnpj, cpf_cnpj_destinatario, nome_destinatario, chave_pix_destinatario)" +
-                "VALUES(?, ?, ?, ?)";
+        String sql = "INSERT INTO historico (cpf_cnpj, cpf_cnpj_destinatario, nome_destinatario, chave_pix_destinatario,banco_destinatario)" +
+                "VALUES(?, ?, ?, ?,?)";
         ResultSet rst = null;
         Connection conn = null;
         PreparedStatement pstm = null;
@@ -75,6 +75,7 @@ public class TransferenciaDAO {
             pstm.setString(2, pixRequest.getCpf_destinatario());
             pstm.setString(3, pixRequest.getNome_Destinatario());
             pstm.setString(4, pixRequest.getChave_pix_destinatario());
+            pstm.setString(5, pixRequest.getBanco_destinatario());
 
 
 

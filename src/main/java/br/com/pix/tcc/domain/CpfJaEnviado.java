@@ -16,6 +16,9 @@ public class CpfJaEnviado {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String chave_pix;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String instituicao_financeira;
+
 
 
 

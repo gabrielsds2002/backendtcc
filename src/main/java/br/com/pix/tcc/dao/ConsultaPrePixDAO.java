@@ -28,7 +28,7 @@ public class ConsultaPrePixDAO {
 
     public ConsultaPrePixResponse validaCadastro(ConsultaPrePixRequest cadastro) {
 
-        String sql = "SELECT nome,saldo,chave_pix,limite_diario,limite_noturno,instituicao_financeira,numero_conta FROM consulta_basica_cliente WHERE cpf_cnpj = '" + cadastro.getCpf_cnpj() + "'";
+        String sql = "SELECT nome,sobrenome,saldo,chave_pix,limite_diario,limite_noturno,instituicao_financeira,numero_conta FROM consulta_basica_cliente WHERE cpf_cnpj = '" + cadastro.getCpf_cnpj() + "'";
 
 
         List<CadastroRequest> cadastros = new ArrayList<CadastroRequest>();
@@ -45,9 +45,9 @@ public class ConsultaPrePixDAO {
 
 
             while (rst.next()) {
-                consulta.setNome(rst.getString("nome"));
+                consulta.setNome(rst.getString("nome")+" "+rst.getString("sobrenome"));
                 consulta.setSaldo(rst.getInt("saldo"));
-                consulta.setNome(rst.getString("chave_pix"));
+                consulta.setChave_pix(rst.getString("chave_pix"));
                 consulta.setLimite_diario(rst.getInt("limite_diario"));
                 consulta.setLimite_noturno(rst.getInt("limite_noturno"));
                 consulta.setInstituicao_financeira(rst.getString("instituicao_financeira"));
@@ -73,7 +73,7 @@ public class ConsultaPrePixDAO {
 
     public List<CpfJaEnviado> historico(ConsultaPrePixRequest cadastro) {
         List<CpfJaEnviado> cpfJaEnviado = new ArrayList<CpfJaEnviado>();
-        String sql = "SELECT cpf_cnpj_destinatario,nome_destinatario,chave_pix_destinatario FROM historico WHERE cpf_cnpj = '" + cadastro.getCpf_cnpj() + "'";
+        String sql = "SELECT cpf_cnpj_destinatario,nome_destinatario,chave_pix_destinatario,banco_destinatario FROM historico WHERE cpf_cnpj = '" + cadastro.getCpf_cnpj() + "'";
         Connection conn = null;
         PreparedStatement pstm = null;
         ResultSet rst = null;
@@ -86,7 +86,8 @@ public class ConsultaPrePixDAO {
                 CpfJaEnviado response = new CpfJaEnviado(
                         rst.getString("cpf_cnpj_destinatario"),
                         rst.getString("nome_destinatario"),
-                        rst.getString("chave_pix_destinatario")
+                        rst.getString("chave_pix_destinatario"),
+                        rst.getString("banco_destinatario")
                 );
                 cpfJaEnviado.add(response);
             }
