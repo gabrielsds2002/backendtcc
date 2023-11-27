@@ -37,7 +37,7 @@ public class PixController {
     public ResponseEntity login(@RequestHeader("Authorization") String token,
                                 @RequestBody PixRequest pixRequest) {
         PixResponse response = new PixResponse();
-        DoacaoDao doacaoDao= new DoacaoDao();
+        DoacaoDao doacaoDao = new DoacaoDao();
         PixDao pixDao = new PixDao();
         LocalTime horaAtual = LocalTime.now();
         LocalTime horarioNoite = LocalTime.of(18, 00);
@@ -45,70 +45,78 @@ public class PixController {
 
         try {
             String valida;
-            valida= ValidadorCPF_CNPJ.validarCPF(pixRequest.getCpf_destinatario());
-            if(valida == "Valor valido") {
-                pixRequest.setChave_pix_destinatario(validadorCPFCnpj.limparCaracteresEspeciais(pixRequest.getCpf_destinatario()));
-                pixRequest.setChave_pix_remetente(validadorCPFCnpj.limparCaracteresEspeciais(pixRequest.getChave_pix_remetente()));
-                pixRequest.setCpf_remetente(ValidadorCPF_CNPJ.limparCaracteresEspeciais(pixRequest.getCpf_remetente()));
-                String getToken = JwtGenerator.validaToken(token, pixRequest.getCpf_remetente());
-                if (getToken == "Token valido") {
-                    if (pixDao.consulta_clientes(pixRequest) == true) {
-                        dados = pixDao.getDados(pixRequest.getCpf_remetente());
-                        dados.setSaldo(ConsultaSaldoDao.consultaSaldo(pixRequest.getCpf_remetente()).getSaldo());
-                        if (horaAtual.isAfter(horarioNoite)) {
-                            if (dados.getLimiteDiario() > pixRequest.getValor_transferencia()) {
-                                if (pixRequest.getSenha().equals(dados.getSenha())) {
-                                    Validarastreavel(pixRequest);
-                                    tranferencia(pixRequest);
-                                } else if (pixRequest.getSenha().equals(dados.getSenhaSeguranca())) {
-                                    rastreavel(pixRequest);
-                                    tranferencia(pixRequest);
+            valida = ValidadorCPF_CNPJ.validarCPF(pixRequest.getCpf_destinatario());
+            if (valida == "Valor valido") {
+
+                if (pixRequest.getChave_pix_destinatario() == null || pixRequest.getChave_pix_destinatario().isEmpty()) {
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(obterRespostaErro("Chave Pix Destinatario está vazia", HttpStatus.FORBIDDEN));
+                } else if (pixRequest.getChave_pix_remetente() == null || pixRequest.getChave_pix_remetente().isEmpty()) {
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(obterRespostaErro("Chave Pix Remetente está vazia", HttpStatus.FORBIDDEN));
+                } else {
+
+                    pixRequest.setChave_pix_destinatario(validadorCPFCnpj.limparCaracteresEspeciais(pixRequest.getCpf_destinatario()));
+                    pixRequest.setChave_pix_remetente(validadorCPFCnpj.limparCaracteresEspeciais(pixRequest.getChave_pix_remetente()));
+                    pixRequest.setCpf_remetente(ValidadorCPF_CNPJ.limparCaracteresEspeciais(pixRequest.getCpf_remetente()));
+                    String getToken = JwtGenerator.validaToken(token, pixRequest.getCpf_remetente());
+                    if (getToken == "Token valido") {
+                        if (pixDao.consulta_clientes(pixRequest) == true) {
+                            dados = pixDao.getDados(pixRequest.getCpf_remetente());
+                            dados.setSaldo(ConsultaSaldoDao.consultaSaldo(pixRequest.getCpf_remetente()).getSaldo());
+                            if (horaAtual.isAfter(horarioNoite)) {
+                                if (dados.getLimiteDiario() > pixRequest.getValor_transferencia()) {
+                                    if (pixRequest.getSenha().equals(dados.getSenha())) {
+                                        Validarastreavel(pixRequest);
+                                        tranferencia(pixRequest);
+                                    } else if (pixRequest.getSenha().equals(dados.getSenhaSeguranca())) {
+                                        rastreavel(pixRequest);
+                                        tranferencia(pixRequest);
 
 
+                                    } else {
+                                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(obterRespostaErroRes("senha invalida", HttpStatus.BAD_REQUEST));
+                                    }
                                 } else {
-                                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(obterRespostaErroRes("senha invalida", HttpStatus.BAD_REQUEST));
+                                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(obterRespostaErroRes("Valor da transferencia maior que o Limite diario", HttpStatus.BAD_REQUEST));
                                 }
                             } else {
-                                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(obterRespostaErroRes("Valor da transferencia maior que o Limite diario", HttpStatus.BAD_REQUEST));
-                            }
-                        } else {
-                            if (dados.getLimiteDiario() > pixRequest.getValor_transferencia()) {
-                                if (pixRequest.getSenha().equals(dados.getSenha())) {
-                                    tranferencia(pixRequest);
-                                } else if (pixRequest.getSenha().equals(dados.getSenhaSeguranca())) {
-                                    rastreavel(pixRequest);
+                                if (dados.getLimiteDiario() > pixRequest.getValor_transferencia()) {
+                                    if (pixRequest.getSenha().equals(dados.getSenha())) {
+                                        tranferencia(pixRequest);
+                                    } else if (pixRequest.getSenha().equals(dados.getSenhaSeguranca())) {
+                                        rastreavel(pixRequest);
 
+                                    } else {
+                                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(obterRespostaErroRes("senha invalida", HttpStatus.BAD_REQUEST));
+                                    }
                                 } else {
-                                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(obterRespostaErroRes("senha invalida", HttpStatus.BAD_REQUEST));
+                                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(obterRespostaErroRes("Valor da transferencia maior que o Limite diario", HttpStatus.BAD_REQUEST));
+
+
                                 }
-                            } else {
-                                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(obterRespostaErroRes("Valor da transferencia maior que o Limite diario", HttpStatus.BAD_REQUEST));
-
-
                             }
                         }
+                        response.setCpfRemetente(formata.formatarCPF(pixRequest.getCpf_remetente()));
+                        response.setCpfDestinatario(formata.formatarCPF(pixRequest.getCpf_destinatario()));
+                        response.setValortransferencia(pixRequest.getValor_transferencia());
+                        response.setHoraTransferencia(formata.formatarLocalTime(LocalTime.now()));
+                        response.setDataTransferencia(formata.formatarLocalDate(LocalDate.now()));
+                        response.setNomeDestinatario(pixRequest.getNome_Destinatario());
+                        response.setNomeRemetente(pixRequest.getNome_remetente());
+                        response.setMensagem("Transferencia concluida com sucesso");
+                        response.setCodigoValidacao(CodigoValidacao.gerarCodigoValidacao(10));
+                        response.setCodigo(HttpStatus.OK);
+                        doacaoDao.atualizaSaldoDoacao(calcular1Porcento(pixRequest.getValor_transferencia()));
+                        return ResponseEntity.ok(response);
+                    } else {
+                        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(obterRespostaErroRes(getToken, HttpStatus.UNAUTHORIZED));
                     }
-                    response.setCpfRemetente(formata.formatarCPF(pixRequest.getCpf_remetente()));
-                    response.setCpfDestinatario(formata.formatarCPF(pixRequest.getCpf_destinatario()));
-                    response.setValortransferencia(pixRequest.getValor_transferencia());
-                    response.setHoraTransferencia(formata.formatarLocalTime(LocalTime.now()));
-                    response.setDataTransferencia(formata.formatarLocalDate(LocalDate.now()));
-                    response.setNomeDestinatario(pixRequest.getNome_Destinatario());
-                    response.setNomeRemetente(pixRequest.getNome_remetente());
-                    response.setMensagem("Transferencia concluida com sucesso");
-                    response.setCodigoValidacao(CodigoValidacao.gerarCodigoValidacao(10));
-                    response.setCodigo(HttpStatus.OK);
-                    doacaoDao.atualizaSaldoDoacao(calcular1Porcento(pixRequest.getValor_transferencia()));
-                    return ResponseEntity.ok(response);
-                } else {
-                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(obterRespostaErroRes(getToken, HttpStatus.UNAUTHORIZED));
                 }
-            }else{
+            } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(obterRespostaErro(valida, HttpStatus.UNPROCESSABLE_ENTITY));
             }
 
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(obterRespostaErroRes("Serviço indisponível",HttpStatus.BAD_REQUEST));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(obterRespostaErroRes("Serviço indisponível", HttpStatus.BAD_REQUEST));
 
         }
 
@@ -141,7 +149,7 @@ public class PixController {
             RastreamentoDAO rastreamentoDAO = new RastreamentoDAO();
             tranferencia(pixRequest);
             rastreamentoDAO.atualizaHistorico(pixRequest);
-            if(pixRequest.getRastreavel()== null || pixRequest.getRastreavel()== false){
+            if (pixRequest.getRastreavel() == null || pixRequest.getRastreavel() == false) {
                 rastreamentoDAO.atualizaClienteRastreado(pixRequest.getCpf_destinatario());
             }
         } catch (Exception e) {
@@ -177,8 +185,6 @@ public class PixController {
         response.setCodigo(HttpStatus.valueOf(status.value()));
         return response;
     }
-
-
 
 
 }
