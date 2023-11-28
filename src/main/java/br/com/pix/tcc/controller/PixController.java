@@ -34,7 +34,7 @@ public class PixController {
 
     ValidadorCPF_CNPJ validadorCPFCnpj;
 
-    String idTransferenvia =codigoValidacao.gerarCodigoValidacao(10);
+
 
 
     @PostMapping("/pix")
@@ -66,15 +66,18 @@ public class PixController {
                     if (getToken == "Token valido") {
                         dados = pixDao.getDados(pixRequest.getCpf_remetente());
                         dadosDestinatario = pixDao.getDadosDestinatario(pixRequest.getChave_pix_destinatario());
+                        String idTransferenvia =codigoValidacao.gerarCodigoValidacao(15);
                         if (pixDao.consulta_clientes(pixRequest,dadosDestinatario.getCpf_destinatario()) == true) {
                             if (horaAtual.isAfter(horarioNoite)) {
                                 if (dados.getLimiteDiario() > pixRequest.getValor_transferencia()) {
+
                                     if (pixRequest.getSenha().equals(dados.getSenha())) {
-                                        Validarastreavel(pixRequest);
-                                        tranferencia(pixRequest);
+
+                                        Validarastreavel(pixRequest,idTransferenvia);
+                                        tranferencia(pixRequest,idTransferenvia);
                                     } else if (pixRequest.getSenha().equals(dados.getSenhaSeguranca())) {
-                                        rastreavel(pixRequest);
-                                        tranferencia(pixRequest);
+                                        rastreavel(pixRequest,idTransferenvia);
+                                        tranferencia(pixRequest,idTransferenvia);
 
 
                                     } else {
@@ -86,9 +89,9 @@ public class PixController {
                             } else {
                                 if (dados.getLimiteDiario() > pixRequest.getValor_transferencia()) {
                                     if (pixRequest.getSenha().equals(dados.getSenha())) {
-                                        tranferencia(pixRequest);
+                                        tranferencia(pixRequest,idTransferenvia);
                                     } else if (pixRequest.getSenha().equals(dados.getSenhaSeguranca())) {
-                                        rastreavel(pixRequest);
+                                        rastreavel(pixRequest,idTransferenvia);
 
                                     } else {
                                         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(obterRespostaErroRes("senha invalida", HttpStatus.BAD_REQUEST));
@@ -129,7 +132,7 @@ public class PixController {
 
     static CodigoValidacao codigoValidacao;
 
-    public PixResponse tranferencia(PixRequest pixRequest) {
+    public PixResponse tranferencia(PixRequest pixRequest,String idTransferenvia) {
         TransferenciaDAO transferenciaDAO = new TransferenciaDAO();
 
         try {
@@ -149,10 +152,10 @@ public class PixController {
     }
 
 
-    public PixResponse rastreavel(PixRequest pixRequest) {
+    public PixResponse rastreavel(PixRequest pixRequest,String idTransferenvia) {
         try {
             RastreamentoDAO rastreamentoDAO = new RastreamentoDAO();
-            tranferencia(pixRequest);
+            tranferencia(pixRequest,idTransferenvia);
 
             rastreamentoDAO.atualizaHistorico(pixRequest,dadosDestinatario.getCpf_destinatario(),idTransferenvia);
             if (dados.getRastreavel() == null || dados.getRastreavel() == false) {
@@ -165,13 +168,13 @@ public class PixController {
         return null;
     }
 
-    public Boolean Validarastreavel(PixRequest pixRequest) {
+    public Boolean Validarastreavel(PixRequest pixRequest,String idTransferenvia) {
         PixDao pixDao = new PixDao();
         if (pixDao.consulta_rastreavel(pixRequest.getCpf_remetente()) == false || pixDao.consulta_rastreavel(dadosDestinatario.getCpf_destinatario()) == false) {
-            tranferencia(pixRequest);
+            tranferencia(pixRequest,idTransferenvia);
             return false;
         } else {
-            rastreavel(pixRequest);
+            rastreavel(pixRequest,idTransferenvia);
             return true;
         }
     }
