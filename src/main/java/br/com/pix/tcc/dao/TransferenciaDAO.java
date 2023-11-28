@@ -90,9 +90,9 @@ public class TransferenciaDAO {
         }
     }
 
-    public static void atualizarSaldoSoma(String cpf, int numeroConta, Float valorParaAdicionar) {
+    public static void atualizarSaldoSoma(String cpf, Float valorParaAdicionar) {
 
-            String sql = "UPDATE consulta_basica_cliente SET saldo = saldo + ? WHERE cpf_cnpj = ? AND numero_conta = ?";
+            String sql = "UPDATE consulta_basica_cliente SET saldo = saldo + ? WHERE cpf_cnpj = ?";
 
             ResultSet rst = null;
             Connection conn = null;
@@ -102,7 +102,6 @@ public class TransferenciaDAO {
                 pstm = (PreparedStatement) conn.prepareStatement(sql);
                 pstm.setFloat(1, valorParaAdicionar);
                 pstm.setString(2, cpf);
-                pstm.setInt(3, numeroConta);
                 pstm.execute();
 
 
@@ -115,9 +114,9 @@ public class TransferenciaDAO {
     }
 
 
-    public static void atualizarSaldo(String cpf, int numeroConta, Float valorParaAdicionar) {
+    public static void atualizarSaldo(String cpf, Float valorParaAdicionar) {
 
-        String sql = "UPDATE consulta_basica_cliente SET saldo = saldo - ? WHERE cpf_cnpj = ? AND numero_conta = ?";
+        String sql = "UPDATE consulta_basica_cliente SET saldo = saldo - ? WHERE cpf_cnpj = ?";
 
         ResultSet rst = null;
         Connection conn = null;
@@ -127,7 +126,6 @@ public class TransferenciaDAO {
             pstm = (PreparedStatement) conn.prepareStatement(sql);
             pstm.setFloat(1, valorParaAdicionar);
             pstm.setString(2, cpf);
-            pstm.setInt(3, numeroConta);
             pstm.execute();
 
 

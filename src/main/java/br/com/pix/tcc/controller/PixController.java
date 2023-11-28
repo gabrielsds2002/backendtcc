@@ -131,8 +131,8 @@ public class PixController {
             pixRequest.setIdTransferencia(codigoValidacao.gerarCodigoValidacao(10));
             transferenciaDAO.pixResponse(pixRequest);
             transferenciaDAO.atualizaHistorico(pixRequest);
-            transferenciaDAO.atualizarSaldoSoma(pixRequest.getCpf_destinatario(), pixRequest.getNumero_conta_remetente(), pixRequest.getValor_transferencia());
-            transferenciaDAO.atualizarSaldo(pixRequest.getCpf_remetente(), pixRequest.getNumero_conta_pagador(), pixRequest.getValor_transferencia());
+            transferenciaDAO.atualizarSaldoSoma(pixRequest.getCpf_destinatario(), pixRequest.getValor_transferencia());
+            transferenciaDAO.atualizarSaldo(pixRequest.getCpf_remetente(), pixRequest.getValor_transferencia());
             PixResponse response = new PixResponse();
             response.setCodigo(HttpStatus.OK);
             return response;
