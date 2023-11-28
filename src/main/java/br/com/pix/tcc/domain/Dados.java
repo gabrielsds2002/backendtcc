@@ -18,4 +18,10 @@ public class Dados {
 
     Float limiteNoturno;
 
+    String banco_remetente;
+    Integer numero_conta_pagador;
+
+    String nome;
+
+    Boolean rastreavel;
 }
