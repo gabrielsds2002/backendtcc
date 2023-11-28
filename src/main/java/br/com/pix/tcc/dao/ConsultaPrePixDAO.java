@@ -118,7 +118,7 @@ public class ConsultaPrePixDAO {
 
             while (rst.next()) {
                 consulta.setNome(rst.getString("nome"));
-                consulta.setNome(rst.getString("chave_pix"));
+                consulta.setChave_pix(rst.getString("chave_pix"));
                 consulta.setInstituicao_financeira(rst.getString("instituicao_financeira"));
                 consulta.setNumeroContaRemetente(rst.getString("numero_conta"));
             }
