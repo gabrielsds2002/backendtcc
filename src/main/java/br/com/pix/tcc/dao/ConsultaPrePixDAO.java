@@ -100,7 +100,7 @@ public class ConsultaPrePixDAO {
     }
     public ConsultaDestinatarioResponse validaRemetente(ConsultaDestinatario cadastro) {
 
-        String sql = "SELECT nome,chave_pix,instituicao_financeira,numero_conta FROM consulta_basica_cliente WHERE chave_pix = '" + cadastro.getChavepix() + "'";
+        String sql = "SELECT nome,sobrenome,chave_pix,instituicao_financeira,numero_conta FROM consulta_basica_cliente WHERE chave_pix = '" + cadastro.getChavepix() + "'";
 
 
         List<CadastroRequest> cadastros = new ArrayList<CadastroRequest>();
@@ -117,12 +117,12 @@ public class ConsultaPrePixDAO {
 
 
             while (rst.next()) {
-                consulta.setNome(rst.getString("nome"));
+                consulta.setNome(rst.getString("nome")+" "+rst.getString("sobrenome"));
                 consulta.setChave_pix(rst.getString("chave_pix"));
                 consulta.setInstituicao_financeira(rst.getString("instituicao_financeira"));
                 consulta.setNumeroContaRemetente(rst.getString("numero_conta"));
             }
-            if (consulta !=null){
+            if (cadastro.getChavepix().equals(consulta.getChave_pix())){
                 consulta.setMensagem("Usuario encontrado!");
                 consulta.setCodigo(HttpStatus.OK);
                 return consulta;
