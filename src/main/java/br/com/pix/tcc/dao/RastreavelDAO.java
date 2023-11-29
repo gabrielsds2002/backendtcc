@@ -83,7 +83,7 @@ public class RastreavelDAO {
 
     public static List<RastreavelConsultaResponse> consultaTodosRastreavelDeUmCpf(String cpf) {
         List<RastreavelConsultaResponse> responseList = new ArrayList<>();
-        String sql = "SELECT cpf_cnpj,id_transferencia FROM rastreavel";
+        String sql = "SELECT cpf_cnpj,id_transferencia FROM rastreavel WHERE cpf_cnpj LIKE '"+cpf+"%'";
         Connection conn = null;
         PreparedStatement pstm = null;
         ResultSet rst = null;
