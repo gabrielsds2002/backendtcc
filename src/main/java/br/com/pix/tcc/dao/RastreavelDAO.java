@@ -21,7 +21,7 @@ public class RastreavelDAO {
 
     public static List<RastreavelResponse> consultaRastreavel(String cpf,String idTransferencia) {
         List<RastreavelResponse> responseList = new ArrayList<RastreavelResponse>();
-        String sql = "SELECT * FROM rastreavel WHERE cpf_cnpj = '" + cpf + "' AND id_transferencia = '" + idTransferencia + "'";
+        String sql = "SELECT * FROM rastreavel WHERE cpf_cnpj_destinatario = '" + cpf + "' AND id_transferencia = '" + idTransferencia + "'";
         Connection conn = null;
         PreparedStatement pstm = null;
         ResultSet rst = null;
@@ -56,7 +56,7 @@ public class RastreavelDAO {
 
     public static List<RastreavelConsultaResponse> consultaTodosRastreavel() {
         List<RastreavelConsultaResponse> responseList = new ArrayList<>();
-        String sql = "SELECT cpf_cnpj,id_transferencia FROM rastreavel";
+        String sql = "SELECT cpf_cnpj_destinatario,id_transferencia FROM rastreavel";
         Connection conn = null;
         PreparedStatement pstm = null;
         ResultSet rst = null;
@@ -67,7 +67,7 @@ public class RastreavelDAO {
             while (rst.next()) {
 
                 RastreavelConsultaResponse response = new RastreavelConsultaResponse(
-                        rst.getString("cpf_cnpj"),
+                        rst.getString("cpf_cnpj_destinatario"),
                         rst.getString("id_transferencia")
                 );
                 responseList.add(response);
@@ -83,7 +83,7 @@ public class RastreavelDAO {
 
     public static List<RastreavelConsultaResponse> consultaTodosRastreavelDeUmCpf(String cpf) {
         List<RastreavelConsultaResponse> responseList = new ArrayList<>();
-        String sql = "SELECT cpf_cnpj,id_transferencia FROM rastreavel WHERE cpf_cnpj LIKE '"+cpf+"%'";
+        String sql = "SELECT cpf_cnpj_destinatario,id_transferencia FROM rastreavel WHERE cpf_cnpj_destinatario LIKE '"+cpf+"%'";
         Connection conn = null;
         PreparedStatement pstm = null;
         ResultSet rst = null;
@@ -94,7 +94,7 @@ public class RastreavelDAO {
             while (rst.next()) {
 
                 RastreavelConsultaResponse response = new RastreavelConsultaResponse(
-                        rst.getString("cpf_cnpj"),
+                        rst.getString("cpf_cnpj_destinatario"),
                         rst.getString("id_transferencia")
                 );
                 responseList.add(response);
@@ -129,7 +129,7 @@ public class RastreavelDAO {
 //    }
 
     public static String DeleteSituaçãoRastreavel(String cpf,String idTransferencia) {
-        String sql = "DELETE FROM rastreavel WHERE cpf_cnpj = '" + cpf + "' AND id_transferencia = '" + idTransferencia + "'";
+        String sql = "DELETE FROM rastreavel WHERE cpf_cnpj_destinatario = '" + cpf + "' AND id_transferencia = '" + idTransferencia + "'";
         Connection conn = null;
         PreparedStatement pstm = null;
         ResultSet rst = null;
